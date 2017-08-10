@@ -27,6 +27,17 @@ const contentTypes = {
   '.jpeg': 'image/jpeg',
 };
 
+// getlist((err, shoppinglist) => {
+//   if (err) {
+//     return err;
+//   }
+//   else {
+//     const listResponse = JSON.stringify(shoppinglist);
+//     res.writeHead(200, {'Content-Type': 'application/json'});
+//     res.end(listResponse);
+//   };
+// });
+
 
 function send401 (response,message) {
   message = message || 'fail!';
@@ -78,6 +89,7 @@ const handlers = {
 
   loggedin: (req, res) => {
     //check we have a JWT
+
     const {jwt} = cookie.parse(req.headers.cookie);   ///module name left here for clarity - remove if error!
     if (jwt) {
         verify (jwt, SECRET, (err,jwtContents) => {
@@ -120,6 +132,21 @@ const handlers = {
     }
 
     //This will call getlist and load it to the dom on logged-in.html
+    const filePath = path.join(__dirname, "..", "public", "loggedin.html");
+    fs.readFile(filePath, (error, file) => {
+      if (error) {
+        res.writeHead(500, {
+          "Content-type": "text/html"
+        });
+        res.end("<h1>So sorry, we've had a problem on our end.</h1>");
+
+      } else {
+        res.writeHead(200, {
+          "Content-type": "text/html"
+        });
+        res.end(file);
+      }
+    });
   },
 
   //This will redirect us to the signup page
@@ -206,9 +233,47 @@ const handlers = {
 
   //This will call the addtolist query
   addtolist: (req, res) => {
+    let body = '';
+    req.on('data', function(chunk) {
+      body += chunk;
+    });
+    req.on('end', () => {
+      const content = queryString.parse(body).content;
+      addtolist(content, (err, dbres) => {
+        if(err) {
+          res.writeHead(500, {
+            'Content-Type': 'text/html'
+          })
+          res.end('<h1>The list is full</h1>')
+        } else {
+          res.writeHead(302, {
+            'Location': '/loggedin'
+          })
+          res.end();
+        }
 
+      });
+      console.log(content);
+});
   },
   // Add more endpoints
+
+  getlist: (req, res) => {
+    getlist((err, shoppinglist) => {
+      console.log(shoppinglist);
+      if (err) {
+        res.writeHead(500, {
+          'Content-Type': 'text/html'
+        })
+        res.end('<h1>Im sorry the shops are closed</h1>')
+      } else {
+        const listResponse = JSON.stringify(shoppinglist);
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        console.log('Im the list response ', listResponse);
+        res.end(listResponse);
+      };
+    });
+  },
 
   notFound: (req, res) => {
     res.writeHead(404, {
