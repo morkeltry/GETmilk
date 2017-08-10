@@ -12,7 +12,7 @@
 
     <script>
       if document.cookie.includes ('jwt')
-        window.location = "loggedin";        
+        window.location = "loggedin";
     </script>
 
   </head>
@@ -20,12 +20,12 @@
     <nav>
       <form id="login" action="/login" method='POST'>
         <label for="username">Username:
-          <input id="username" type="username" placeholder="Type your username" aria-label="Please enter your username" value=""/>
+          <input id="username" name="username" type="text" placeholder="Type your username" aria-label="Please enter your username" value=""/>
         </label>
         <label for="password">Password:
-          <input id="password" type="password" placeholder="Type your password" aria-label="Please use a password with at least 8 characters involving both upper and lower case letters and numbers"/>
+          <input id="password" name="password" type="password" placeholder="Type your password" aria-label="Please use a password with at least 8 characters involving both upper and lower case letters and numbers"/>
         </label>
-        <button id="submit" type="submit" value="submit" aria-label="Click to log in">Log in</button>
+        <input id="submit" type="submit" value="Log in" aria-label="Click to log in"/>
       </form>
       <!-- <a href="signup.html" title="Sign up here">Want access? Sign up here!</a> -->
       <!-- <h3 class="invisible" id="usernameWarning">Please enter a valid username</h3>
