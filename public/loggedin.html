@@ -11,6 +11,24 @@
     <meta charset="UTF-8">
   </head>
   <body>
+    <nav>
+      <article>
+      <h3>Username</h3>
+      <p>Click <a href="/">here</a> to log out</p>
+    </article>
+    </nav>
+    <section>
+      <article id="shoppinglist">
+        <ul id="shoppingitems">
+
+        </ul>
+        <form action="/addtolist" method="post" id="addtolist">
+          <label for="content">What's missing?</label>
+          <input id="content" name="content" type="text" placeholder="What do you need to GET?" autofocus>
+          <button type="submit" value="submit">Add to List</button>
+        </form>
+      </article>
+    </section>
     <script src = "/index.js"></script>
 </body>
 
