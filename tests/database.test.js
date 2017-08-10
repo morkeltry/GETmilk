@@ -7,6 +7,9 @@ const adduser = require('../src/queries/adduser');
 const checkuser = require('../src/queries/checkuser');
 const getlist = require('../src/queries/getlist');
 
+// const hash = require ('crypto').hmac or somesuch
+const hash = (input) => {return input};
+
 const sql = fs.readFileSync(`${__dirname}/database-test/db_build.test.sql`).toString();
 
 const resetDatabase = () => {
@@ -38,25 +41,25 @@ tape('Testing getlist.js', (t) => {
     marked_by: NULL,
   },
   ];
-  getData(dbConnection, (err, res) => {
+  getData( (err, res) => {
     if (err) console.log(err);
-    t.deepEquals(res, expected, 'getlist should give us all of our shopping.');
+    t.deepEquals(res, expected, 'getlist should tell us we need milk, flowers and cookies.');
     t.end();
   });
 });
 
-tape('check if postData adds a new entry to database', (t) => {
+tape('check if addtolist adds a new entry to database', (t) => {
   resetDatabase();
-  postData('Mulino Bianco', 'Abbracci', 500, true, dbConnection, (err, res) => {
+  addtolist(3,'Chicken',0, (err, res) => {
     if (err) console.log(err);
-    dbConnection.query('SELECT * FROM biscuits;', (err, res) => {
+    dbConnection.query('SELECT * FROM list;', (err, res) => {
       if (err);
       const expected = {
         id: 4,
-        name: 'Abbracci',
-        brand: 'Mulino Bianco',
-        chocolate: true,
-        calories: 500 };
+        owner_id: 3,
+        content : 'Chicken',
+        marked_by: 0
+      };
         const actual = res.rows[3];
         t.deepEquals(expected, actual, 'both rows should have same values');
         dbConnection.end();
@@ -64,3 +67,52 @@ tape('check if postData adds a new entry to database', (t) => {
     });
   });
 });
+
+//
+// tape ('check that checkuser does not return password / password hash', (t) =>{
+//
+// }
+
+tape ('check that checkuser with a valid user and password returns a single result with id,  username and admin status given', (t) => {
+  resetDatabase();
+  const expected = {
+    id:
+    username:'Tom'
+    is_admin: false
+  };
+
+  checkuser ('Tom', hash(12345), (err,result) => {
+    if (err) console.log(err);
+    t.deepEquals( result, expected, 'checkuser should return {id, username, is_admin} ');
+    t.end();
+
+
+  });
+});
+//
+// tape ('check that checkuser with a valid user and invalid password returns error callback', (t) => {
+//   checkuser ('Tom', hash(12345), (err,result) => {
+//   if (err) console.log(err);
+//     t.deepEquals( result, expected, 'checkuser should return {id, username, is_admin} ');
+//     t.end();
+//
+//
+//   });
+// );
+//
+
+
+// tape ('check that checkuser with non-existence user returns error callback' (t) => {
+//
+// );
+//
+//
+//
+//
+// tape('check if adduser adds a new entry to database',
+//
+// tape('check if adduser returns maximum one entry if multiple users found',
+//
+// tape('check if adduser throws error if user exists',
+//
+// tape('check if adduser throws error if user is blank',
