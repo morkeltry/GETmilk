@@ -86,7 +86,8 @@ const handlers = {
   checkuser: (req, res) => {
   },
 
-  //This will call the add user query
+  // This checks if the user exists (checkuser.js), checks if the passwords match, hashes the password if they match and sends the information to the database (adduser.js).
+
   adduser: (req, res) => {
     let body = '';
     req.on('data', function(chunk) {
@@ -110,7 +111,6 @@ const handlers = {
         if (err) {
           console.log(err);
         } else {
-          console.log('i am hashed password:', result);
           const hashedPassword = result;
           adduser(username, hashedPassword, (err, dbRes) => {
             if (err) {
@@ -135,8 +135,10 @@ const handlers = {
     };
   });
   },
+
+  //This will call the addtolist query
   addtolist: (req, res) => {
-    //This will call the addtolist query
+
   },
   // Add more endpoints
 
