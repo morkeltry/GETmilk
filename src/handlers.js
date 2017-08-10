@@ -22,6 +22,17 @@ const contentTypes = {
   '.jpeg': 'image/jpeg',
 };
 
+getlist((err, shoppinglist) => {
+  if (err) {
+    return err;
+  }
+  else {
+    const listResponse = JSON.stringify(shoppinglist);
+    res.writeHead(200, 'Content-Type': 'application/json');
+    res.end(listResponse);
+  };
+});
+
 const handlers = {
   home: (req, res) => {
     const filePath = path.join(__dirname, "..", "public", "index.html");
