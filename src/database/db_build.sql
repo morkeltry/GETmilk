@@ -1,0 +1,23 @@
+BEGIN;
+
+DROP TABLE IF EXISTS users, list CASCADE;
+
+DROP TABLE IF EXISTS list CASCADE;
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(20) NOT NULL,
+  pw_hash64 VARCHAR(40) NOT NULL,
+  is_admin BOOLEAN DEFAULT false
+);
+
+INSERT INTO users ()
+
+CREATE TABLE list (
+  id SERIAL PRIMARY KEY,
+  owner_id INTEGER REFERENCES users (id),
+  content TEXT NOT NULL,
+  marked_by INTEGER
+);
+
+COMMIT;
