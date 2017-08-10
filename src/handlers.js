@@ -1,10 +1,13 @@
-'use strict';
 
+const cookie = require ('cookie');
+const verify = require ('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
 const queryString = require('querystring');
 const bcrypt = require('bcryptjs');
+
+'use strict';
 
 const dbConnection = require('./database/db_connections');
 const addtolist = require('./queries/addtolist');
@@ -13,6 +16,7 @@ const checklogin = require('./queries/checklogin');
 const checksignup = require('./queries/checksignup');
 const getlist = require('./queries/getlist');
 const validator = require('./validator');
+const checkLogin = require('./queries/checklogin');
 
 const contentTypes = {
   '.html': 'text/html',
@@ -22,6 +26,17 @@ const contentTypes = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
 };
+
+
+function send401 (response,message) {
+  message = message || 'fail!';
+  response.writeHead (401,{
+    "Content-Type" : "text/plain",
+    "Content-Length" : message.length
+  });
+  response.end (message);
+};
+
 
 const handlers = {
   home: (req, res) => {
@@ -61,7 +76,49 @@ const handlers = {
     });
   },
   loggedin: (req, res) => {
-    //This is where we create our JWT's
+    //check we have a JWT
+    const {jwt} = cookie.parse(req.headers.cookie);   ///module name left here for clarity - remove if error!
+    if (jwt) {
+        verify (jwt, SECRET, (err,jwtContents)) => {
+          if (err) {
+            send401 ('fake jwt!');
+          }
+          else {   //responsible devs would also test the date/age of the jwt here ;)
+            const strippedJwt = {jwtContents.username, jwtContents.hashPassword,  jwtContents.perUserSalt};
+            checkLogin (strippedJwt, (err,loggedInUser) => {
+              if (err) {
+                send401 ('wrong user/pass');
+              }
+              else {
+                const filePath = path.join(__dirname, "..", "public", "loggedin.html");
+                fs.readFile(filePath, (error, file) => {
+                  if (error) {
+                    res.writeHead(500, {
+                      "Content-type": "text/html"
+                    });
+                    res.end("<h1>So sorry, we've had a problem on our end.</h1>");
+                  } else {
+                    res.writeHead(200, {
+                      ////this is where we'd set a normal basic cookie, after the jwt, just to make username available to frontend (from loggedInUser)
+                      "Content-Type": "text/html",
+                      "Content-Length" : file.length
+                    });
+                    res.end(file);
+                  }
+                });
+
+              }
+            });
+          });
+
+
+        }
+
+    }
+    else {
+      send401 ('this is not a jwt cookie - you should be redirected painlessly! - Soorry :P');
+    }
+
     //This will call getlist and load it to the dom on logged-in.html
   },
 
