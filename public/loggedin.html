@@ -5,27 +5,29 @@
     <title>GET Milk</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Gentium+Book+Basic:400,400i" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet"> -->
     <link href="main.css" rel="stylesheet">
     <link rel="icon" type="image/ico" href="favicon.ico">
     <meta charset="UTF-8">
   </head>
   <body>
-    <nav>
-      <article>
-      <h3>Username</h3>
-      <p>Click <a href="/">here</a> to log out</p>
+    <article id="welcome-logout">
+      <p>Hello Username. Click <a href="/">here</a> to log out.</p>
     </article>
-    </nav>
+    <header>
+      <h1>GETmilk!</h1>
+    </header>
     <section>
       <article id="shoppinglist">
         <ul id="shoppingitems">
 
         </ul>
         <form action="/addtolist" method="post" id="addtolist">
-          <label for="content">What's missing?</label>
-          <input id="content" name="content" type="text" placeholder="What do you need to GET?" autofocus>
-          <button type="submit" value="submit">Add to List</button>
+          <label for="content">What's missing?
+          <input id="content" name="content" type="text" placeholder="What else do we need to GET?" aria-label="Please enter a shopping list item"autofocus>
+          </label>
+          <button type="submit" value="submit" id="submit">Add to List</button>
         </form>
       </article>
     </section>
