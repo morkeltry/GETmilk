@@ -1,3 +1,4 @@
+
 function checkLogin (strippedJwt, successCallback) {
 /// performs query to validate strippedJwt contents,
 // passes (err, user) back to cb, where user = display name of user who is OK to log in.
