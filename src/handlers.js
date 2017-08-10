@@ -26,6 +26,17 @@ const contentTypes = {
   '.jpeg': 'image/jpeg',
 };
 
+
+function send401 (response,message) {
+  message = message || 'fail!';
+  response.writeHead (401,{
+    "Content-Type" : "text/plain",
+    "Content-Length" : message.length
+  });
+  response.end (message);
+};
+
+
 const handlers = {
   home: (req, res) => {
     const filePath = path.join(__dirname, "..", "public", "index.html");
@@ -69,13 +80,13 @@ const handlers = {
     if (jwt) {
         verify (jwt, SECRET, (err,jwtContents)) => {
           if (err) {
-            send401 ();
+            send401 ('fake jwt!');
           }
           else {   //responsible devs would also test the date/age of the jwt here ;)
             const strippedJwt = {jwtContents.username, jwtContents.hashPassword,  jwtContents.perUserSalt};
             checkLogin (strippedJwt, (err,loggedInUser) => {
               if (err) {
-                send401 ();
+                send401 ('wrong user/pass');
               }
               else {
                 const filePath = path.join(__dirname, "..", "public", "loggedin.html");
@@ -104,7 +115,7 @@ const handlers = {
 
     }
     else {
-      send401 ();
+      send401 ('this is not a jwt cookie - you should be redirected painlessly! - Soorry :P');
     }
 
     //This will call getlist and load it to the dom on logged-in.html
