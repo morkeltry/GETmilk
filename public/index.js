@@ -52,6 +52,8 @@ function passwordMatchCheck(password, passwordConfirm) {
   }
 };
 
+// console.log ('cookie:',document.cookie,'---');
+
 // submit.addEventListener('click', function (e){
 //   // e.preventDefault();
 //   var email = e.path[1].elements[0].value;

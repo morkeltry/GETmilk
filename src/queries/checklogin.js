@@ -1,30 +1,10 @@
-// const dbConnection = require('../database/db_connections');
-//
-// // function to check if a new username already exists in the database
-// const checkNewUsername = (username, cb) => {
-//   const sqlQuery = `SELECT * FROM users WHERE username=${username};`
-//   dbConnection.query(sqlQuery, (err, res) => {
-//     if (err) {
-//       cb(err);
-//     }
-//     else {
-//       cb
-//     }
-//   })
-// }
-//
-// // function to validate a username and password on the log in page
-// // const checkuser = (username, hashedPassword, cb) => {
-// //   const sqlQuery = `INSERT INTO users (username, hashedPassword) VALUES ($1, $2)`;
-// //   dbConnection.query(sqlQuery, [username, hashedPassword], (err, res) => {
-// //     if (err) {
-// //       cb(err)
-// //     } else {
-// //       cb(null,res.rows);
-// //     }
-// //   });
-// // };
-//
-// module.exports = {
-//   checkuser
-// }
+
+function checkLogin (strippedJwt, successCallback) {
+/// performs query to validate strippedJwt contents,
+// passes (err, user) back to cb, where user = display name of user who is OK to log in.
+/// this is where we would pass back {id,user} if id required in frontend
+
+
+
+// const strippedJwt = {jwtContents.username, jwtContents.hashPassword,  jwtContents.perUserSalt}
+}
