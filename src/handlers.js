@@ -9,7 +9,8 @@ const bcrypt = require('bcryptjs');
 const dbConnection = require('./database/db_connections');
 const addtolist = require('./queries/addtolist');
 const adduser = require('./queries/adduser');
-const checkuser = require('./queries/checkuser');
+const checklogin = require('./queries/checklogin');
+const checksignup = require('./queries/checksignup');
 const getlist = require('./queries/getlist');
 const validator = require('./validator');
 
@@ -82,11 +83,11 @@ const handlers = {
     });
   },
 
-  //This will call the checkuser query
-  checkuser: (req, res) => {
+  //This will call the checklogin query
+  checklogin: (req, res) => {
   },
 
-  // This checks if the user exists (checkuser.js), checks if the passwords match, hashes the password if they match and sends the information to the database (adduser.js).
+  // This checks if the user exists (checksignup.js), checks if the passwords match, hashes the password if they match and sends the information to the database (adduser.js).
 
   adduser: (req, res) => {
     let body = '';
@@ -95,44 +96,54 @@ const handlers = {
     });
     req.on('end', () => {
       const username = queryString.parse(body).username;
-      const password = queryString.parse(body).password;
-      const confirmPassword = queryString.parse(body).confirmPassword;
-      console.log(username, password, confirmPassword);
-      if (password === confirmPassword) {
-        const hashPassword = (password, callback) => {
-        const saltRounds = 10;
-        bcrypt.hash(password, saltRounds, (err, hash) => {
-          if (err) callback(err);
-          callback(null, hash);
-        });
-      };
-
-      hashPassword(password, (err, result) => {
-        if (err) {
+      checksignup(username, (err, dbRes) => {
+        if(err) {
           console.log(err);
+        } else if (dbRes.rows.length !== 0){
+          console.log("I am a username that exists, I come from adduser: ", dbRes.rows)
+          res.writeHead(500, 'Content-Type:text/html');
+          res.end('<h1>Sorry, this user exists</h1>');
         } else {
-          const hashedPassword = result;
-          adduser(username, hashedPassword, (err, dbRes) => {
-            if (err) {
-              res.writeHead(500, 'Content-Type:text/html');
-              res.end('<h1>Sorry, there was a problem adding the user</h1>');
-              console.log(err)
+          const password = queryString.parse(body).password;
+          const confirmPassword = queryString.parse(body).confirmPassword;
+          console.log(username, password, confirmPassword);
+          if (password === confirmPassword) {
+            const hashPassword = (password, callback) => {
+              const saltRounds = 10;
+              bcrypt.hash(password, saltRounds, (err, hash) => {
+                if (err) callback(err);
+                callback(null, hash);
+              });
             };
-          })
-          res.writeHead(200, {
-            'Content-type': 'text/html'
-          });
-          fs.readFile(__dirname + "/../public/loggedin.html", function(error, file) {
-            if (error) {
-              console.log(error);
-              return;
-            } else {
-              res.end(file)
-            }
-          })
+
+            hashPassword(password, (err, result) => {
+              if (err) {
+                console.log(err);
+              } else {
+                const hashedPassword = result;
+                adduser(username, hashedPassword, (err, dbRes) => {
+                  if (err) {
+                    res.writeHead(500, 'Content-Type:text/html');
+                    res.end('<h1>Sorry, there was a problem adding the user</h1>');
+                    console.log(err)
+                  };
+                })
+                res.writeHead(200, {
+                  'Content-type': 'text/html'
+                });
+                fs.readFile(__dirname + "/../public/loggedin.html", function(error, file) {
+                  if (error) {
+                    console.log(error);
+                    return;
+                  } else {
+                    res.end(file)
+                  }
+                })
+              }
+            });
+          };
         }
-      });
-    };
+      })
   });
   },
 

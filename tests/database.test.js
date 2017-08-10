@@ -1,10 +1,10 @@
 const fs = require('fs');
-const dbConnection = require('./test_database/db_connection.test');
-const dbBuild = require('./test_database/db_build.test');
+const dbConnection = require('./test_database/db_connections_test');
+const dbBuild = require('./test_database/db_build_test');
 const tape = require('tape');
 const addtolist = require('../src/queries/addtolist');
 const adduser = require('../src/queries/adduser');
-const checkuser = require('../src/queries/checkuser');
+const checklogin = require('../src/queries/checklogin');
 const getlist = require('../src/queries/getlist');
 
 // const hash = require ('crypto').hmac or somesuch
@@ -69,11 +69,11 @@ tape('check if addtolist adds a new entry to database', (t) => {
 });
 
 //
-// tape ('check that checkuser does not return password / password hash', (t) =>{
+// tape ('check that checklogin does not return password / password hash', (t) =>{
 //
 // }
 
-tape ('check that checkuser with a valid user and password returns a single result with id,  username and admin status given', (t) => {
+tape ('check that checklogin with a valid user and password returns a single result with id,  username and admin status given', (t) => {
   resetDatabase();
   const expected = {
     id:
@@ -81,19 +81,19 @@ tape ('check that checkuser with a valid user and password returns a single resu
     is_admin: false
   };
 
-  checkuser ('Tom', hash(12345), (err,result) => {
+  checklogin ('Tom', hash(12345), (err,result) => {
     if (err) console.log(err);
-    t.deepEquals( result, expected, 'checkuser should return {id, username, is_admin} ');
+    t.deepEquals( result, expected, 'checklogin should return {id, username, is_admin} ');
     t.end();
 
 
   });
 });
 //
-// tape ('check that checkuser with a valid user and invalid password returns error callback', (t) => {
-//   checkuser ('Tom', hash(12345), (err,result) => {
+// tape ('check that checklogin with a valid user and invalid password returns error callback', (t) => {
+//   checklogin ('Tom', hash(12345), (err,result) => {
 //   if (err) console.log(err);
-//     t.deepEquals( result, expected, 'checkuser should return {id, username, is_admin} ');
+//     t.deepEquals( result, expected, 'checklogin should return {id, username, is_admin} ');
 //     t.end();
 //
 //
@@ -102,7 +102,7 @@ tape ('check that checkuser with a valid user and password returns a single resu
 //
 
 
-// tape ('check that checkuser with non-existence user returns error callback' (t) => {
+// tape ('check that checklogin with non-existence user returns error callback' (t) => {
 //
 // );
 //
