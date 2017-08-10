@@ -222,7 +222,20 @@ const handlers = {
   // Add more endpoints
 
   getlist: (req, res) => {
-
+    getlist((err, shoppinglist) => {
+      console.log(shoppinglist);
+      if (err) {
+        res.writeHead(500, {
+          'Content-Type': 'text/html'
+        })
+        res.end('<h1>Im sorry the shops are closed</h1>')
+      } else {
+        const listResponse = JSON.stringify(shoppinglist);
+        res.writeHead(200, {'Content-Type': 'application/json'});
+        console.log('Im the list response ', listResponse);
+        res.end(listResponse);
+      };
+    });
   },
 
   notFound: (req, res) => {

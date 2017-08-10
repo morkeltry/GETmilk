@@ -1,3 +1,40 @@
+(function () {
+  httpRequest('/getlist', renderDom);
+
+  // make the api call to server
+  function httpRequest(url, nextFunction) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var data = JSON.parse(xhr.responseText);
+        nextFunction(data);
+      }
+    };
+    xhr.open('GET', url, true);
+    xhr.send();
+  }
+
+  function renderDom(data) {
+    var section = document.getElementById('shoppingitems');
+    data.forEach(function (item) {
+      // var row = document.createElement('tr');
+      // var name = document.createElement('td');
+      // var brand = document.createElement('td');
+      // var calories = document.createElement('td');
+      var food = document.createElement('li');
+      console.log(item);
+      food.textContent = item.content;
+
+      section.appendChild(food);
+    });
+  }
+})();
+
+
+
+
+
+
 var submit = document.getElementById('submit');
 var usernameBox = document.getElementById('username');
 var passwordBox = document.getElementById('password');
