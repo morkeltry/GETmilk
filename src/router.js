@@ -1,4 +1,4 @@
-const handlers = require('./handler');
+const handlers = require('./handlers');
 const url = require('url');
 
 const router = (req, res) => {
