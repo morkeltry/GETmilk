@@ -57,6 +57,7 @@ const handlers = {
       }
     });
   },
+
   assets: (req, res) => {
     const url = req.url;
     const extension = path.extname(url);
@@ -165,7 +166,7 @@ const handlers = {
           if (err.code == '42P01'){
             console.log ('DB connection error. Are you sure you want to connect to ', dbConnection.options.database,' ?');
           } else
-            console.log (err);    //eg User not found
+            renderError (err);    //eg User not found
           } else {
 
   console.log ('Ignoring ',err.name,'. Pushing on through...');
@@ -276,6 +277,22 @@ const handlers = {
 
   },
   // Add more endpoints
+
+  loginError: (req,res,message) => {
+    const filePath = path.join(__dirname, "..", "public", "index.html");
+    fs.readFile(filePath, (error, file) => {
+
+        res.writeHead(403, {
+          "Content-type": "text/html"
+        });
+        res.end(message);
+
+
+    });
+  },
+
+
+
 
   notFound: (req, res) => {
     res.writeHead(404, {
