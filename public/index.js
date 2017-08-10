@@ -60,3 +60,5 @@ function passwordMatchCheck(password, passwordConfirm) {
 //   passwordCheck(password, passwordConfirm);
 //
 // });
+
+// XHR Request
