@@ -11,6 +11,30 @@
     <meta charset="UTF-8">
   </head>
   <body>
+    <nav>
+      <form id="signup" action="/adduser" method='POST'>
+        <label for="username">Username:
+          <input id="username" type="username" name="username" placeholder="E.g. Alina" aria-label="Please enter your username" value=""/>
+        </label>
+        <label for="password">Password:
+          <input id="password" type="password" name="password" placeholder="Create a password" aria-label="Please use a password with at least 8 characters involving both upper and lower case letters and numbers"/>
+        </label>
+        <label for="confirmPassword">Confirm your password:
+          <input id="confirmPassword" type="password" name="confirmPassword" placeholder="Confirm your password" aria-label="Please use a password with at least 8 characters involving both upper and lower case letters and numbers"/>
+        </label>
+        <button id="submit" type="submit" value="submit" aria-label="Click to sign up">Sign up</button>
+      </form>
+      <!-- <h3 class="invisible" id="usernameWarning">Please enter a valid username</h3>
+      <h3 class="invisible" id="passwordWarning">Please enter a valid password</h3> -->
+      <!-- more client side validation checks here too -->
+      <!-- <div id='validation-text'></div> -->
+    </nav>
+<section>
+  <article>
+
+  </article>
+</section>
+
     <script src = "/index.js"></script>
 </body>
 
