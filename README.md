@@ -6,9 +6,17 @@ Too many times have tired faccers tried to wake themselves up with a strong cup 
 
 With no time to run to Simply Fresh before the next workshop starts, wouldn't it be great to add coffee to an online FAC shopping list so that anyone can buy it on their next shop?
 
-For convenience, wouldn't it be great if the list can be viewed without having to log in? But obviously only tried and tested FACcers should be able to add items to the list once they've made an account.
+For convenience, wouldn't it also be great if the list can be viewed without having to log in? But obviously only tried and tested FACcers should be able to add items to the list once they've made an account.
 
 Introducing GETmilk, the official FAC shopping app. Never go thirsty again.
+
+## MVP & SGs
+
+We wanted our core app to allow users to sign up if necessary, log in, view and add shopping list items, and log out. 
+
+If we had 100% more time, we would have also attempted the following stretch goals:
+* allow users to strike through items once they've been bought
+* admin users to have permission to delete items
 
 ## Requirements
 
