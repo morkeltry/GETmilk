@@ -7,8 +7,9 @@ if(!process.env.DATABASE_URL) throw new Error('Environment variable DATABASE_URL
 // if(!auth) throw new Error('Authprozation is required');
 
 const params = url.parse(process.env.DATABASE_URL);
+console.log ('db host: ',params.host);
 
-  const [username, password] = params.auth.split(':');
+const [username, password] = params.auth.split(':');
 
   const options = {
     host: params.hostname,
