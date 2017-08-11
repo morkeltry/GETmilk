@@ -121,8 +121,8 @@ const handlers = {
                     res.end("<h1>So sorry, we've had a problem on our end.</h1>");
                   } else {
                     res.writeHead(200, {
-                      "Set-Cookie": "username="+jwtContents.username,
-                      ////this is where we'd set a normal basic cookie, after the jwt, just to make username available to frontend (from loggedInUser)
+                      // "Set-Cookie": "username="+jwtContents.username,
+                      ////original plan was to set a normal basic cookie, after the jwt, just to make username available to frontend (from loggedInUser)
                       "Content-Type": "text/html",
                       "Content-Length" : file.length
                     });
