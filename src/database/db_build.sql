@@ -11,7 +11,7 @@ CREATE TABLE users (
   is_admin BOOLEAN DEFAULT false
 );
 
-INSERT INTO users (username, hashedPassword, is_admin) VALUES ('Tom', 12345, false), ('James', 6789, true), ('Amelie', 10101, false);
+INSERT INTO users (username, hashedPassword, is_admin) VALUES ('Tom', '12345', false), ('James', '6789', true), ('Amelie', '10101', false);
 
 CREATE TABLE list (
   id SERIAL PRIMARY KEY,

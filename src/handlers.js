@@ -1,6 +1,6 @@
 
 const cookie = require ('cookie');
-const verify = require ('jsonwebtoken');
+const jwt = require ('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -17,6 +17,7 @@ const checksignup = require('./queries/checksignup');
 const getlist = require('./queries/getlist');
 const validator = require('./validator');
 const checkLogin = require('./queries/checklogin');
+const SECRET = "This is a secret. Don't put it in the code";
 
 const contentTypes = {
   '.html': 'text/html',
@@ -87,12 +88,13 @@ const handlers = {
     });
   },
 
+
   loggedin: (req, res) => {
     //check we have a JWT
 
     const {jwt} = cookie.parse(req.headers.cookie);   ///module name left here for clarity - remove if error!
     if (jwt) {
-        verify (jwt, SECRET, (err,jwtContents) => {
+        jwt.verify (jwt, SECRET, (err,jwtContents) => {
           if (err) {
             send401 ('fake jwt!');
           }
@@ -172,6 +174,71 @@ const handlers = {
   },
 
   // This checks if the user exists (checksignup.js), checks if the passwords match, hashes the password if they match and sends the information to the database (adduser.js).
+
+
+  login: (req,res) => {
+    let body = '';
+    req.on('data', function(chunk) {
+      body += chunk;
+    });
+    req.on('end', () => {
+      // console.log ('Received login request');
+      // console.log ('body: \n',body);
+      const username = queryString.parse(body).username;
+      const password = queryString.parse(body).password;
+        console.log (username, password);
+      checkLogin ({username, cleartextPassword : password}, (err, goodLogin) => {
+        if (err) {
+          if (err.code == '42P01'){
+            console.log ('DB connection error. Are you sure you want to connect to ', dbConnection.options.database,' ?');
+          } else
+            console.log (err);    //eg User not found
+          } else {
+
+  console.log ('Ignoring ',err.name,'. Pushing on through...');
+  goodLogin={username, password:'xbVhashyhashPASSWORDhashsmashbash6Fdm'};
+          if (goodLogin) {
+            jwt.sign(goodLogin, SECRET, (err, token) => {
+              if (err) {throw new Error('jwt broke. Ooopsy woo..')};
+              //if you got to here, that all worked. Time to report back :)
+              console.log('Signed. New jwt = ',token);
+              res.writeHead(302, {
+              "Content-type": "text/html",
+              "Location": "/loggedin",
+              "Set-Cookie": "jwt="+token
+                });
+              res.end("<h1>So sorry, we've had a problem on our end.</h1>");
+
+
+            });
+
+
+
+          }
+          else {throw new Error('Error should have been thrown already! WTF?');}
+        }
+      });
+
+
+    });
+
+
+    const filePath = path.join(__dirname, "..", "public", "index.html");
+    fs.readFile(filePath, (error, file) => {
+      if (error) {
+        res.writeHead(500, {
+          "Content-type": "text/html"
+        });
+        res.end("<h1>So sorry, we've had a problem on our end.</h1>");
+      } else {
+        res.writeHead(200, {
+          "Content-type": "text/html"
+        });
+        res.end(file);
+      }
+    });
+  },
+
 
   adduser: (req, res) => {
     let body = '';

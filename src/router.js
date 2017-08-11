@@ -6,6 +6,7 @@ const router = (req, res) => {
     '/': handlers.home,
     '/main.css': handlers.assets,
     '/index.js': handlers.assets,
+    '/login': handlers.login,
     '/loggedin': handlers.loggedin,
     '/signup': handlers.signup,
     '/checkuser': handlers.checkuser,
