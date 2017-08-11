@@ -13,6 +13,7 @@ const router = (req, res, otherArg) => {
     '/checkuser': handlers.checkuser,
     '/adduser': handlers.adduser,
     '/addtolist': handlers.addtolist,
+    '/getlist': handlers.getlist,
   };
 
   const endpoint = url.parse(req.url).pathname;
