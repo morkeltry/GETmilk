@@ -24,10 +24,10 @@
     <nav>
       <form id="login" action="/login" method='POST'>
         <label for="username">Username:
-          <input id="username" name="username" type="text" placeholder="Type your username" aria-label="Please enter your username" value=""/>
+          <input id="username" name="username" type="text" placeholder="Type your username" required pattern=".{3,}" title="Your username has a minimum of 3 characters" autofocus aria-label="Please enter your username" value=""/>
         </label>
         <label for="password">Password:
-          <input id="password" name="password" type="password" placeholder="Type your password" aria-label="Please use a password with at least 8 characters involving both upper and lower case letters and numbers"/>
+          <input id="password" name="password" type="password" placeholder="Type your password" required pattern=".{6,}" title="Your password has a minimum of 6 characters" aria-label="Please use a password with at least 8 characters involving both upper and lower case letters and numbers"/>
         </label>
         <input id="submit" type="submit" value="Log in" aria-label="Click to log in"/>
       </form>
