@@ -1,20 +1,88 @@
+/******************************
+STYLING FOR ALL HTML PAGES
+*****************************/
+
+html {
+  min-height: 100%;
+}
+
+body {
+  background-color: #FBAB7E;
+  background-image: -webkit-linear-gradient(152deg, #FBAB7E 0%, #F7CE68 100%);
+  background-image: -o-linear-gradient(152deg, #FBAB7E 0%, #F7CE68 100%);
+  background-image: linear-gradient(242deg, #FBAB7E 0%, #F7CE68 100%);
+  font-family: 'Gentium Book Basic', serif;
+  width: 80%;
+  margin: 2em auto;
+}
+
+h1 {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 5em;
+  text-align: center;
+}
+
+form {
+  font-size: 2em;
+}
+
 input {
   display: block;
-  margin: 1% auto;
-  padding: 2%;
-  width: 90%;
+  font-size: 0.9em;
+  margin: 0.5em auto;
+  padding: 0.5em;
+  width: 100%;
   border: darkslategrey 2px solid;
+  border-radius: 0.2em;
+}
+
+#submit {
+  font-size: 0.8em;
+  padding: 0.3em;
+  margin: 0.5em;
+  cursor: pointer;
+  border-radius: 0.2em;
+  color: white;
+  background-color: #d47038;
+  border-color: black;
+}
+
+a {
+  text-decoration: none;
+}
+
+p {
+  font-size: 1.5em;
+}
+
+/******************************
+STYLING FOR LOGGED IN PAGE ONLY
+*****************************/
+
+#welcome-logout {
+  text-align: right;
+  font-size: 0.8em;
+  margin: 0;
+  padding: 0;
+}
+
+#shoppingitems {
+  list-style: none;
+  font-size: 1.5em;
+  border-style: solid;
+  border-width: medium;
+  padding: 1em 1em;
+}
+
+/******************************
+STYLING FOR FRONT END VALIDATION
+*****************************/
+
+.invisible {
+  display: none;
 }
 
 .warning {
   border: red 2px solid;
-}
-
-.submit {
-  margin: 2% auto;
-  width: 45%;
-}
-
-.invisible {
-  display: none;
 }

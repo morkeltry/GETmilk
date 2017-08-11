@@ -5,22 +5,36 @@
     <title>GET Milk</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=Gentium+Book+Basic:400,400i" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet"> -->
     <link href="main.css" rel="stylesheet">
     <link rel="icon" type="image/ico" href="favicon.ico">
     <meta charset="UTF-8">
   </head>
   <body>
-    <h1 id='h1'>
-      hi...
-    </h1>
-    <form>
+    <article id="welcome-logout">
+      <p id="the-text">Hello Username. Click <a href="/">here</a> to log out.</p>
+    </article>
+    <header>
+      <h1>GETmilk!</h1>
+    </header>
+    <section>
+      <article id="shoppinglist">
+        <ul id="shoppingitems">
 
-    </form>
-
+        </ul>
+        <form action="/addtolist" method="post" id="addtolist">
+          <label for="content">What's missing?
+          <input id="content" name="content" type="text" placeholder="What else do we need to GET?" aria-label="Please enter a shopping list item"autofocus>
+          </label>
+          <button type="submit" value="submit" id="submit">Add to List</button>
+        </form>
+      </article>
+    </section>
+    <script src = "/index.js"></script>
     <script>
 
-        var h1= document.getElementById ('h1');
+        var h1= document.getElementById ('the-text');
         if (document.cookie.includes ('username')){
           h1.textContent = 'Hey, '+document.cookie.split('username=')[1]+"...  s'up dawg?";
         }
@@ -31,7 +45,6 @@
         }
 
     </script>
-    <!-- <script src = "/index.js"></script> -->
 </body>
 
 </html>
