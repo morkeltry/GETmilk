@@ -11,7 +11,16 @@ CREATE TABLE users (
   is_admin BOOLEAN DEFAULT false
 );
 
-INSERT INTO users (username, hashedPassword, is_admin) VALUES ('Tom', '12345', false), ('James', '6789', true), ('Amelie', '10101', false);
+-- under bcrypt.hash(pw, 10):
+-- 12345-> $2a$10$jjczKwDy/RYmdFTI.KUY0e.QToOk.fHQcBpOLpF8t8Ulg6dvy5TaW
+-- 6789 -> $2a$10$BEGjB7mWtWc3dEC9i39UquiazSdXXhd1nGwkpYPlPQJjcQ21/4iIC
+-- 10101-> $2a$10$/tjywfbpaLnYEqBjXRHHD.KtgLb5O9GN5kp1cmG/jUY5EHLmkHq5e
+
+
+INSERT INTO users (username, hashedPassword, is_admin) VALUES
+  ('Tom', '$2a$10$jjczKwDy/RYmdFTI.KUY0e.QToOk.fHQcBpOLpF8t8Ulg6dvy5TaW', false),
+  ('James', '$2a$10$BEGjB7mWtWc3dEC9i39UquiazSdXXhd1nGwkpYPlPQJjcQ21/4iIC', true),
+  ('Amelie', '$2a$10$/tjywfbpaLnYEqBjXRHHD.KtgLb5O9GN5kp1cmG/jUY5EHLmkHq5e', false);
 
 CREATE TABLE list (
   id SERIAL PRIMARY KEY,

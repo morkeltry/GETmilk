@@ -1,6 +1,6 @@
 
 const cookie = require ('cookie');
-const jwt = require ('jsonwebtoken');
+const JWT = require ('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
@@ -83,18 +83,21 @@ const handlers = {
     //check we have a JWT
     const {jwt} = cookie.parse(req.headers.cookie);   ///module name left here for clarity - remove if error!
     if (jwt) {
-        jwt.verify (jwt, SECRET, (err,jwtContents) => {
+        console.log ('Got to /loggedin. Found a jwt.')
+        JWT.verify (jwt, SECRET, (err,jwtContents) => {
           if (err) {
-            send401 ('fake jwt!');
+            send401 (res,'fake jwt!');
           }
           else {   //responsible devs would also test the date/age of the jwt here ;)
+            console.log ("Here's yer opened jwt, just to be clear ...",jwtContents)
             const strippedJwt = {
-                    username: jwtContents.username,
-                    cleartextPassword : jwtContents.cleartextPassword
+                    username: jwtContents.username || '',     // remove the ||'' to get useful errors
+                    hashedPw: jwtContents.hashedPw
                   };
             checkLogin (strippedJwt, (err,loggedInUser) => {
               if (err) {
-                send401 ('bcrypt error');
+                console.log (err);
+                send401 (res,'bcrypt error - bad jwt.');
               }
               else {
                 const filePath = path.join(__dirname, "..", "public", "loggedin.html");
@@ -119,7 +122,7 @@ const handlers = {
         });
     }
     else {
-      send401 ('this is not a jwt cookie - you should be redirected painlessly! - Soorry :P');
+      send401 (res,'this is not a jwt cookie - you should be redirected painlessly! - Soorry :P');
     }
 
     //This will call getlist and load it to the dom on logged-in.html
@@ -151,66 +154,85 @@ const handlers = {
 
 
   login: (req,res) => {
+    console.log ('\n\n\n\nLogin request beginning');
     let body = '';
     req.on('data', function(chunk) {
       body += chunk;
     });
     req.on('end', () => {
-      // console.log ('Received login request');
-      // console.log ('body: \n',body);
+      console.log ('Received login request');
+      console.log ('body: ',body);
       const username = queryString.parse(body).username;
       const password = queryString.parse(body).password;
         console.log (username, password);
-      checkLogin ({username, cleartextPassword : password}, (err, goodLogin) => {
-        if (err) {
-          if (err.code == '42P01'){
-            console.log ('DB connection error. Are you sure you want to connect to ', dbConnection.options.database,' ?');
-          } else
-            renderError (err);    //eg User not found
-          } else {
-
-  console.log ('Ignoring ',err.name,'. Pushing on through...');
-  goodLogin={username, password:'xbVhashyhashPASSWORDhashsmashbash6Fdm'};
-          if (goodLogin) {
-            jwt.sign(goodLogin, SECRET, (err, token) => {
-              if (err) {throw new Error('jwt broke. Ooopsy woo..')};
-              //if you got to here, that all worked. Time to report back :)
-              console.log('Signed. New jwt = ',token);
+      bcrypt.hash(password,10, (err,hashedPw) => {
+        checkLogin ({username, hashedPw}, (err, goodLogin) => {
+          if (err) {
+            if (err.code == '42P01'){
+              console.log ('DB connection error. Are you sure you want to connect to ', dbConnection.options.database,' ?');
+            } else {
+              console.log ('Err:', err.message);        //eg Passwords do not match
+              console.log ('Sending you to /loginerror');
+              console.log (res._header);
               res.writeHead(302, {
-              "Content-type": "text/html",
-              "Location": "/loggedin",
-              "Set-Cookie": "jwt="+token
-                });
-              res.end("<h1>So sorry, we've had a problem on our end.</h1>");
+                // 'Content-type': 'text/html',
+                'Location': '/loginerror'        //eg User not found
+              });
+              console.log ('Still sending you to /loginerror');
+              console.log (res._header);
+              res.end();
+              }
+            } else {
+
+    if (err) console.log ('Ignoring ',err.name,'. Pushing on through...');
+    // goodLogin={username, cleartextPassword:'xbVhashyhashPASSWORDhashsmashbash6Fdm'};  //(fake!)
+            if (goodLogin) {
+              JWT.sign(goodLogin, SECRET, (err, token) => {
+                if (err) {throw new Error('jwt broke. Ooopsy woo..')};
+                //if you got to here, that all worked. Time to report back :)
+                console.log('Signed. New jwt = ',token,' from',goodLogin);
+                res.writeHead(302, {
+                "Content-type": "text/html",
+                "Location": "/loggedin",
+                "Set-Cookie": "jwt="+token
+                  });
+                res.end("<h1>So sorry, we've had a problem on our end.</h1>");
 
 
-            });
+              });
 
 
 
-          }
-          else {throw new Error('Error should have been thrown already! WTF?');}
-        }
+            }
+            else {throw new Error('Error should have been thrown already! WTF?');}
+         }
+
+        console.log ('Should have redirected you by now. Maybe your 302 header got intercepted.');
+        });
       });
 
 
     });
 
 
-    const filePath = path.join(__dirname, "..", "public", "index.html");
-    fs.readFile(filePath, (error, file) => {
-      if (error) {
-        res.writeHead(500, {
-          "Content-type": "text/html"
-        });
-        res.end("<h1>So sorry, we've had a problem on our end.</h1>");
-      } else {
-        res.writeHead(200, {
-          "Content-type": "text/html"
-        });
-        res.end(file);
-      }
-    });
+    /////Commented out as it seems to intercept the 302 header even after res.end()
+    //
+    // const filePath = path.join(__dirname, "..", "public", "index.html");
+    // fs.readFile(filePath, (error, file) => {
+    //   if (error) {
+    //     res.writeHead(500, {
+    //       "Content-type": "text/html"
+    //     });
+    //     res.end("<h1>So sorry, we've had a problem on our end.</h1>");
+    //   } else {
+    //     res.writeHead(200, {
+    //       "Content-type": "text/html"
+    //     });
+    //     res.end(file);
+    //   }
+    // });
+
+
   },
 
 
@@ -276,18 +298,15 @@ const handlers = {
   addtolist: (req, res) => {
 
   },
-  // Add more endpoints
 
-  loginError: (req,res,message) => {
+  loginerror: (req,res,message) => {
+  console.log ('Hello... this is /loginerror\nMessage: ',message)
     const filePath = path.join(__dirname, "..", "public", "index.html");
     fs.readFile(filePath, (error, file) => {
-
         res.writeHead(403, {
           "Content-type": "text/html"
         });
-        res.end(message);
-
-
+        res.end(file);
     });
   },
 

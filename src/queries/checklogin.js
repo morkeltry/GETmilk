@@ -8,7 +8,7 @@ function checkLogin (strippedJwt, cb) {
 
 
 
-// const strippedJwt = {jwtContents.username, jwtContents.cleartextPassword}
+// const strippedJwt = {jwtContents.username, jwtContents.cleartextPassword}; Now jwtContents.hashedPw
 
 // const tQ=`SELECT * FROM users;`
 // dbConnection.query(tQ, [], (err, result) => {
@@ -17,6 +17,7 @@ function checkLogin (strippedJwt, cb) {
 // console.log ('err',err);
 //   });
 
+  console.log ('Will compare: ',strippedJwt);
 
   const sqlQuery = `SELECT hashedPassword FROM users WHERE username=$1;`
   dbConnection.query(sqlQuery, [strippedJwt.username], (err, dbResult) => {
@@ -29,21 +30,30 @@ function checkLogin (strippedJwt, cb) {
           message:strippedJwt.username+' is not a user. Would you like to sign up?'});
       } else {
         const correctHPw = dbResult.rows[0].hashedpassword;
-        console.log ('Comparing hash(',strippedJwt.cleartextPassword,') to ',correctHPw);
-        bcrypt.compare (strippedJwt.cleartextPassword, correctHPw, (err,ok)=> {
-          if (err) {
-            cb (err);
-          }
-          else {
-            if (ok) {
-              cb (null, {username, hashedPw :correctHPw});
-            }
-            else {
-              cb (new RangeError ('wrong password - '+strippedJwt.cleartextPassword+' did not match'));
-            }
 
-          }
-        });
+        // console.log ('Comparing hash(',strippedJwt.hashedPw,') to ',correctHPw);
+        // bcrypt.compare (strippedJwt.hashedPw, correctHPw, (err,ok)=> {
+        //   if (err) {
+        //     cb (err);
+        //   }
+        //   else {
+        //     if (ok) {
+        //       cb (null, {username: strippedJwt.username, hashedPw :correctHPw});
+        //     }
+        //     else {
+        //       cb (new RangeError ('wrong password - unhash('+strippedJwt.hashedPw+') did not match'));
+        //     }
+        //
+        //   }
+        // });
+
+        if (strippedJwt.hashedPw === correctHPw)
+          cb (null, {username: strippedJwt.username, hashedPw :correctHPw});
+        else {
+          cb (new RangeError ('wrong password - '+strippedJwt.hashedPw+'     !=     '+correctHPw));
+
+        }
+
       }
     }
   });
