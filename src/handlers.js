@@ -92,7 +92,7 @@ const handlers = {
             console.log ("Here's yer opened jwt, just to be clear ...",jwtContents)
             const strippedJwt = {
                     username: jwtContents.username || '',     // remove the ||'' to get useful errors
-                    hashedPw: jwtContents.hashedPw
+                    hashedPw: jwtContents.hashedPw    ///now unneeded
                   };
             checkLogin (strippedJwt, (err,loggedInUser) => {
               if (err) {
@@ -109,6 +109,7 @@ const handlers = {
                     res.end("<h1>So sorry, we've had a problem on our end.</h1>");
                   } else {
                     res.writeHead(200, {
+                      "Set-Cookie": "username="+jwtContents.username,
                       ////this is where we'd set a normal basic cookie, after the jwt, just to make username available to frontend (from loggedInUser)
                       "Content-Type": "text/html",
                       "Content-Length" : file.length
@@ -192,14 +193,15 @@ const handlers = {
             } else
 
             if (retreived) {
-              JWT.sign(retreived, SECRET, (err, token) => {
+              JWT.sign(retreived, SECRET, (err, token) => {     ///Still stores the hashedPw
+                                                                /// which is no use - just needs the uname
                 if (err) {throw new Error('jwt broke. Ooopsy woo..')};
                 //if you got to here, that all worked. Time to report back :)
                 console.log('Signed. New jwt = ',token,' from',retreived);
                 res.writeHead(302, {
                 "Content-type": "text/html",
                 "Location": "/loggedin",
-                "Set-Cookie": "jwt="+token
+                "Set-Cookie": "jwt="+token+';Max-Age=450'
                   });
                 res.end("<h1>So sorry, we've had a problem on our end.</h1>");
 

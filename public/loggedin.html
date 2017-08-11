@@ -11,7 +11,27 @@
     <meta charset="UTF-8">
   </head>
   <body>
-    <script src = "/index.js"></script>
+    <h1 id='h1'>
+      hi...
+    </h1>
+    <form>
+
+    </form>
+
+    <script>
+
+        var h1= document.getElementById ('h1');
+        if (document.cookie.includes ('username')){
+          h1.textContent = 'Hey, '+document.cookie.split('username=')[1]+"...  s'up dawg?";
+        }
+        else {
+          if (document.cookie.includes ('jwt')){
+            h1.textContent = document.cookie;
+          }
+        }
+
+    </script>
+    <!-- <script src = "/index.js"></script> -->
 </body>
 
 </html>
