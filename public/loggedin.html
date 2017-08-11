@@ -13,7 +13,7 @@
   </head>
   <body>
     <article id="welcome-logout">
-      <p id="the-text">Hello Username. Click <a href="/">here</a> to log out.</p>
+      <p id="the-text">Hello Username.</p><p> Click <a href="/">here</a> to log out.</p>
     </article>
     <header>
       <h1>GETmilk!</h1>
@@ -35,15 +35,22 @@
     <script>
 
         var h1= document.getElementById ('the-text');
+        var username='user';
         if (document.cookie.includes ('username')){
-          h1.textContent = 'Hey, '+document.cookie.split('username=')[1]+"...  s'up dawg?";
+          username=document.cookie.split('username=')[1].split(';')[0];
+          // console.log ('found cookie username=',username);
         }
         else {
           if (document.cookie.includes ('jwt')){
-            h1.textContent = document.cookie;
+          var jwt = document.cookie.split('jwt=')[1].split(';')[0].split('.')[1];
+          username = JSON.parse(atob(jwt).toString()).username;
+          // console.log ('found jwt containing username=',username);
           }
         }
-
+        if (username) {
+          h1.textContent = 'Hey, '+username+"...  s'up dawg?";
+        }
+        else {h1.textContent = 'just dint get user out of that';}
     </script>
 </body>
 
