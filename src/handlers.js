@@ -164,33 +164,38 @@ const handlers = {
       console.log ('body: ',body);
       const username = queryString.parse(body).username;
       const password = queryString.parse(body).password;
-        console.log (username, password);
-      bcrypt.hash(password,10, (err,hashedPw) => {
-        checkLogin ({username, hashedPw}, (err, goodLogin) => {
-          if (err) {
-            if (err.code == '42P01'){
-              console.log ('DB connection error. Are you sure you want to connect to ', dbConnection.options.database,' ?');
-            } else {
-              console.log ('Err:', err.message);        //eg Passwords do not match
-              console.log ('Sending you to /loginerror');
-              console.log (res._header);
-              res.writeHead(302, {
-                // 'Content-type': 'text/html',
-                'Location': '/loginerror'        //eg User not found
-              });
-              console.log ('Still sending you to /loginerror');
-              console.log (res._header);
-              res.end();
-              }
-            } else {
+      console.log (username, password);
+      checkLogin ({username}, (err, retreived) => {    ///was : {username, hashedPw}
+        if (err) {
+          if (err.code == '42P01'){
+            console.log ('DB connection error. Are you sure you want to connect to ', dbConnection.options.database,' ?');
+          } else {
+            console.log ('Err:', err.message);        //eg Passwords do not match
+            console.log ('Sending you to /loginerror');
+            console.log (res._header);
+            res.writeHead(302, {
+              // 'Content-type': 'text/html',
+              'Location': '/loginerror'        //eg User not found
+            });
+            console.log ('Still sending you to /loginerror');
+            console.log (res._header);
+            res.end();
+            }
+          } else {
 
     if (err) console.log ('Ignoring ',err.name,'. Pushing on through...');
     // goodLogin={username, cleartextPassword:'xbVhashyhashPASSWORDhashsmashbash6Fdm'};  //(fake!)
-            if (goodLogin) {
-              JWT.sign(goodLogin, SECRET, (err, token) => {
+
+            bcrypt.compare(password,retreived.hashedPw, (err,hashedPw) => {
+            if (err) {
+              cb (new RangeError ('wrong password - hash('+password+')     !=     '+trippedJwt.hashedPw));
+            } else
+
+            if (retreived) {
+              JWT.sign(retreived, SECRET, (err, token) => {
                 if (err) {throw new Error('jwt broke. Ooopsy woo..')};
                 //if you got to here, that all worked. Time to report back :)
-                console.log('Signed. New jwt = ',token,' from',goodLogin);
+                console.log('Signed. New jwt = ',token,' from',retreived);
                 res.writeHead(302, {
                 "Content-type": "text/html",
                 "Location": "/loggedin",
@@ -205,10 +210,11 @@ const handlers = {
 
             }
             else {throw new Error('Error should have been thrown already! WTF?');}
-         }
 
-        console.log ('Should have redirected you by now. Maybe your 302 header got intercepted.');
-        });
+
+          console.log ('Should have redirected you by now. Maybe your 302 header got intercepted.');
+          });
+        }
       });
 
 
